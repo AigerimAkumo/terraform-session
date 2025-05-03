@@ -13,8 +13,8 @@ resource "aws_instance" "first_ec2" {
               #!/bin/bash
               dnf install -y httpd
               systemctl enable httpd
-              systemctl strtyuil;'
-              art httpd
+              systemctl start httpd;'
+        
               echo "<html><body><h1>Session-2 homework is complete! </h1></body></html>" > /var/www/html/index.html
               EOF
 }
