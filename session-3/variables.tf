@@ -8,5 +8,5 @@ variable "instance_type" {
 variable "env" {
   description = "Environment"
   type = string
-  default = "qa"
+  default = "dev"
 }

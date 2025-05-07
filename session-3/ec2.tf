@@ -1,6 +1,7 @@
 
 resource "aws_instance" "first_ec2" {
-  ami           = "ami-07b0c09aab6e66ee9"
+  count = 5 //meta-argument
+  ami           = data.aws_ami.amazon_linux_2023.id
   instance_type = var.instance_type
 
   tags = {
@@ -10,6 +11,7 @@ resource "aws_instance" "first_ec2" {
   }
 
   vpc_security_group_ids = [aws_security_group.simple_sg.id]
+  user_data = templatefile("userdata.sh", { environment =  var.env })
 
 }
 
@@ -22,6 +24,12 @@ resource "aws_instance" "first_ec2" {
 # Reference t o Input variable
 # Syntax: var.variable_name
 # Ex: var.instance.type
+
+# Reference to Data Source
+# Syntax: data.first_label.second_label.attribute
+# ex: data.aws_ami.amazon_linux_2023.id
+
+
 
 resource "aws_security_group" "simple_sg" {
   name        = "simple-sg"
