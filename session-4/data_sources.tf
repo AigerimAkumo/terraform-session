@@ -1,4 +1,7 @@
 
+
+// It will fetch the data with existing resource
+// 🧑‍💻 "Fetch data from the server" → The computer goes and gets the data.
 // Fetch amazon linux 2023 IAM ID
 data "aws_ami" "amazon_linux_2023" {
   most_recent      = true

@@ -9,24 +9,25 @@ resource "aws_vpc" "main_vpc" {
   }
 }
 
-# Public Subnets // 3
-resource "aws_subnet" "public1" {
-    count = 3
+# Public Subnets
+resource "aws_subnet" "public" {
+  count = length(var.public_subnet_azs)
   vpc_id                  = aws_vpc.main_vpc.id
-  cidr_block              = "10.0.1.0/24"
-  availability_zone       = "us-east-1a"
+  cidr_block              = var.public_subnet_cidrs[count.index]
+  availability_zone       = var.public_subnet_azs[count.index]
   map_public_ip_on_launch = true
-  tags = { Name = "public-1a" }
-
+  tags = { Name = "public-${count.index + 1 }"
 }
 
-# Private Subnets   // 3
-resource "aws_subnet" "private1" {
-    count = 3
+}
+# Private Subnets
+resource "aws_subnet" "private" {
+  count = length(var.private_subnet_azs)
   vpc_id            = aws_vpc.main_vpc.id
-  cidr_block        = "10.0.4.0/24"
-  availability_zone = "us-east-1a"
-  tags = { Name = "private-1a" }
+  cidr_block        = var.private_subnet_cidrs[count.index]
+  availability_zone = var.private_subnet_azs[count.index]
+  tags = { Name = "private-${count.index + 1 }"
+}
 }
 
 # Internet Gateway
@@ -46,7 +47,7 @@ resource "aws_eip" "nat_eip" {
 # NAT Gateway in public subnet
 resource "aws_nat_gateway" "nat_gw" {
   allocation_id = aws_eip.nat_eip.id
-  subnet_id     = aws_subnet.public1.id
+  subnet_id     = aws_subnet.public[0].id
 
   tags = {
     Name = "gw-NAT"
@@ -84,22 +85,38 @@ resource "aws_route_table" "private_rtb" {
   }
 }
 
-# Route Table Associations // public
-resource "aws_route_table_association" "public_assoc" {
-  count          = length(var.public_subnet_ids)
-  subnet_id      = var.public_subnet_ids[count.index]
+# Route Table Associations
+resource "aws_route_table_association" "public_assoc" {   // public
+   count = 3
+  subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public_rtb.id
 }
 
+# resource "aws_route_table_association" "public2_assoc" {
+#   subnet_id      = aws_subnet.public2.id
+#   route_table_id = aws_route_table.public_rtb.id
+# }
 
+# resource "aws_route_table_association" "public3_assoc" {
+#   subnet_id      = aws_subnet.public3.id
+#   route_table_id = aws_route_table.public_rtb.id
+# }
 
-# Route Table Associations // private
-resource "aws_route_table_association" "private_assoc" {
-  count          = length(var.private_subnet_ids)
-  subnet_id      = var.private_subnet_ids[count.index]
+resource "aws_route_table_association" "private_assoc" {  // private
+  count = 3
+  subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private_rtb.id
 }
 
+# resource "aws_route_table_association" "private2_assoc" {
+#   subnet_id      = aws_subnet.private2.id
+#   route_table_id = aws_route_table.private_rtb.id
+# }
+
+# resource "aws_route_table_association" "private3_assoc" {
+#   subnet_id      = aws_subnet.private3.id
+#   route_table_id = aws_route_table.private_rtb.id
+# }
 
 # Security Group
 resource "aws_security_group" "sg_ec2" {
@@ -134,16 +151,13 @@ resource "aws_security_group" "sg_ec2" {
 }
 
 # EC2 Instance
-resource "aws_instance" "first_ec2" {
-  count = 5 //meta-argument
+resource "aws_instance" "main" {
   ami           = data.aws_ami.amazon_linux_2023.id
   instance_type = var.instance_type
-
   tags = {
-    Name = "${var.env}-instance"  // dev-instance, qa-instance, stage-instance, prod-instance
-    // Name2 = format("%s-instance",var.env)
+    Name        = "${var.env}-instance" 
+    Name2       = format("%s-instance", var.env)         
     Environment = var.env
   }
-
-  vpc_security_group_ids = [aws_security_group.simple_sg.id]
+  
 }

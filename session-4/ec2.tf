@@ -17,7 +17,6 @@ resource "aws_instance" "first_ec2" {
 
 
 
-
 resource "aws_security_group" "simple_sg" {
   name        = "${var.env}-instance-sg"
   description = "this is a test simple-sg"
