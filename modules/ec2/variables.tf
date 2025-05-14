@@ -1,24 +1,20 @@
 variable "instance_type" {
-    description = "instance_type"
-    type = string   
+    description = "aws instance size or type"
+    type = string // string, number, boolean, list(string), map 
     default = "t2.micro"
 }
-
 variable "env" {
-  description = "Environment"
-  type = string
-  default = "dev"
+    description = "environmnet"
+    type = string
+    default = "dev"
 }
-
 variable "ami" {
-  description = "a list of ingress"
-  type= string
-  default = "xuyZ"
+    description = "AMI id"
+    type = string
+    default = "xyz"
 }
 variable "vpc_security_group_ids" {
-  description = "a list of ingress"
-  type=list(number)
-  default = [ 22 ]
-
-  
+    description = "security group id"
+    type = list(string)
+    default = [ "xyz" ]
 }

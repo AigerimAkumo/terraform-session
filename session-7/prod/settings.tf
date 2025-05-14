@@ -1,4 +1,4 @@
-########## Versions #########
+
 terraform {
   required_version = "~> 1.11.0" // Terraform Version
   required_providers {
@@ -7,4 +7,8 @@ terraform {
       version = "~> 5.96.0"
     }
   }
+}
+
+provider "aws" {
+  region = "us-west-2"
 }
