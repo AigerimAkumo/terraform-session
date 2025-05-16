@@ -1,7 +1,7 @@
 
 resource "aws_sqs_queue" "count_queue" {
-    count = length(var.names)
-    name = element(var.names, count.index)
+    count = length(var.names)    # Create 3 queues
+    name = element(var.names, count.index)   # Give each queue a name
 }
 
 variable "names" {
