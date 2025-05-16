@@ -152,12 +152,16 @@ resource "aws_security_group" "sg_ec2" {
 
 # EC2 Instance
 resource "aws_instance" "main" {
-  ami           = data.aws_ami.amazon_linux_2023.id
-  instance_type = var.instance_type
+  ami                         = data.aws_ami.amazon_linux_2023.id
+  instance_type               = var.instance_type
+  subnet_id                   = aws_subnet.public[0].id
+  associate_public_ip_address = true
+  key_name                    = "myLaptopKey" 
+  vpc_security_group_ids      = [aws_security_group.sg_ec2.id]
+
   tags = {
-    Name        = "${var.env}-instance" 
-    Name2       = format("%s-instance", var.env)         
+    Name        = "${var.env}-instance"
+    Name2       = format("%s-instance", var.env)
     Environment = var.env
   }
-  
 }
