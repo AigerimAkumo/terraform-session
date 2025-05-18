@@ -10,3 +10,8 @@ variable "project" {
 variable "owner" {
   default = "aigerim"
 }
+
+// session-6
+variable "domain_name" {
+  type = string
+}

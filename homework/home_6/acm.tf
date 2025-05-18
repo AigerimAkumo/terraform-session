@@ -1,5 +1,5 @@
 
-resource "aws_acm_certificate" "cert" {
+resource "aws_acm_certificate" "cert" {     // Requesting an SSL certificate from AWS.
   domain_name       = var.domain_name
   validation_method = "DNS"
 
